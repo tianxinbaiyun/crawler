@@ -1,3 +1,10 @@
-.svn
+.DS_Store
+test
+debug
+
+*.img
 .idea
+/vendor
 *.exe
+*.log
+server
