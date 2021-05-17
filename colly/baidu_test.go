@@ -1,13 +1,15 @@
 package colly
 
 import (
+	"errors"
 	"github.com/gocolly/colly"
+	"github.com/stretchr/testify/assert"
 	"log"
 	"testing"
 )
 
 // GetBaiduHotSearch 获取百度热搜版
-func GetBaiduHotSearch() {
+func GetBaiduHotSearch() (err error) {
 	uri := "http://www.baidu.com"
 	job := NewJob(uri, nil, nil)
 	job.Collector.OnHTML(".s-hotsearch-content .hotsearch-item .title-content", func(element *colly.HTMLElement) {
@@ -18,22 +20,24 @@ func GetBaiduHotSearch() {
 	// 收到响应后
 	job.Collector.OnResponse(func(r *colly.Response) {
 		if r.StatusCode != 200 {
-			panic("访问失败: " + job.URI)
+			err = errors.New("访问失败: " + job.URI)
+			return
 		}
 	})
 
-	err2 := job.Collector.Visit(job.URI)
-	if err2 != nil {
-		panic(err2)
+	err = job.Collector.Visit(job.URI)
+	if err != nil {
+		return
 	}
 
 	// 采集等待结束
 	job.Collector.Wait()
+	return
 }
 
 func TestGetBaiduHotSearch(t *testing.T) {
-	GetBaiduHotSearch()
-
+	err := GetBaiduHotSearch()
+	assert.NoError(t, err)
 	//=== RUN   TestGetBaiduHotSearch
 	//2021/05/14 19:29:03 1国家卫健委派出专家组前往安徽热
 	//2021/05/14 19:29:03 4恒河出现大量浮尸 印媒给出原因
@@ -48,7 +52,8 @@ func TestGetBaiduHotSearch(t *testing.T) {
 func BenchmarkGetBaiduHotSearch(b *testing.B) {
 	b.RunParallel(func(pb *testing.PB) {
 		for pb.Next() {
-			GetBaiduHotSearch()
+			err := GetBaiduHotSearch()
+			assert.NoError(b, err)
 		}
 	})
 	//BenchmarkGetBaiduHotSearch-20    	     146	   9522083 ns/op

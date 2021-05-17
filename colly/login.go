@@ -3,6 +3,7 @@ package colly
 import (
 	"fmt"
 	"github.com/gocolly/colly"
+	"log"
 	"net/http"
 	"strings"
 )
@@ -26,20 +27,21 @@ func (j *Job) Login(uri string, body map[string]string) (res *colly.Response, er
 }
 
 // CookieLogin cookie 登录
-func (j *Job) CookieLogin(uri, cookie string) {
+func (j *Job) CookieLogin(uri, cookie string) (err error) {
 
 	// 在提出请求之前打印 "访问…"
 	j.Collector.OnRequest(func(r *colly.Request) {
-		cookie := "session=eyJjc3JmX3Rva2VuIjoiR3doU0FqTG5RV3pkTkp2RE1vS1lCZmdPeFJ0VFZGaVVFQ2xYYmtadW1yYVBzeXFwY2VISSIsInVzZXJuYW1lIjoicXFxIn0.EmHo_w.pMG9x7Vdwd2INAw1O25NLw6saRk"
-		err := j.Collector.SetCookies(uri, setCookieRaw(cookie))
+		err = j.Collector.SetCookies(uri, SplitCookieRaw(cookie))
 		if err != nil {
-			fmt.Println(err)
+			log.Println(err)
+			return
 		}
 	})
+	return
 }
 
-// setCookieRaw set cookies raw
-func setCookieRaw(cookieRaw string) []*http.Cookie {
+// SplitCookieRaw set cookies raw
+func SplitCookieRaw(cookieRaw string) []*http.Cookie {
 	// 可以添加多个cookie
 	var cookies []*http.Cookie
 	cookieList := strings.Split(cookieRaw, "; ")
