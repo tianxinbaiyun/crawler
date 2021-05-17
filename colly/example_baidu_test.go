@@ -35,7 +35,7 @@ func Example() {
 	return
 }
 
-func TestGetBaiduHotSearch(t *testing.T) {
+func TestExample(t *testing.T) {
 	Example()
 	//=== RUN   TestGetBaiduHotSearch
 	//2021/05/14 19:29:03 1国家卫健委派出专家组前往安徽热
@@ -48,7 +48,7 @@ func TestGetBaiduHotSearch(t *testing.T) {
 	//PASS
 }
 
-func BenchmarkGetBaiduHotSearch(b *testing.B) {
+func BenchmarkExample(b *testing.B) {
 	b.RunParallel(func(pb *testing.PB) {
 		for pb.Next() {
 			Example()
