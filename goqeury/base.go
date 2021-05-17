@@ -2,7 +2,6 @@ package goqeury
 
 import (
 	"github.com/PuerkitoBio/goquery"
-	"log"
 	"net/http"
 )
 
@@ -35,18 +34,4 @@ func (job *Job) FetchData() (doc *goquery.Document, err error) {
 		return
 	}
 	return
-}
-
-// GetBaiduHotSearch 获取百度热搜版
-func GetBaiduHotSearch() {
-	job := NewJob("http://www.baidu.com")
-	doc, err := job.FetchData()
-	if err != nil {
-		log.Println(err)
-		return
-	}
-	doc.Find(".s-hotsearch-content .hotsearch-item").Each(func(i int, selection *goquery.Selection) {
-		content := selection.Find(".title-content-title").Text()
-		log.Printf("%d:%s", i, content)
-	})
 }
