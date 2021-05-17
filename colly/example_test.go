@@ -3,13 +3,13 @@ package colly
 import (
 	"errors"
 	"github.com/gocolly/colly"
-	"github.com/stretchr/testify/assert"
 	"log"
 	"testing"
 )
 
-// GetBaiduHotSearch 获取百度热搜版
-func GetBaiduHotSearch() (err error) {
+// Example 获取百度热搜版
+func Example() {
+	var err error
 	uri := "http://www.baidu.com"
 	job := NewJob(uri, nil, nil)
 	job.Collector.OnHTML(".s-hotsearch-content .hotsearch-item .title-content", func(element *colly.HTMLElement) {
@@ -36,8 +36,7 @@ func GetBaiduHotSearch() (err error) {
 }
 
 func TestGetBaiduHotSearch(t *testing.T) {
-	err := GetBaiduHotSearch()
-	assert.NoError(t, err)
+	Example()
 	//=== RUN   TestGetBaiduHotSearch
 	//2021/05/14 19:29:03 1国家卫健委派出专家组前往安徽热
 	//2021/05/14 19:29:03 4恒河出现大量浮尸 印媒给出原因
@@ -52,8 +51,7 @@ func TestGetBaiduHotSearch(t *testing.T) {
 func BenchmarkGetBaiduHotSearch(b *testing.B) {
 	b.RunParallel(func(pb *testing.PB) {
 		for pb.Next() {
-			err := GetBaiduHotSearch()
-			assert.NoError(b, err)
+			Example()
 		}
 	})
 	//BenchmarkGetBaiduHotSearch-20    	     146	   9522083 ns/op
