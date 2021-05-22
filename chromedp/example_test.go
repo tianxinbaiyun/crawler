@@ -1,0 +1,5 @@
+package chromedp
+
+func Example() {
+
+}
