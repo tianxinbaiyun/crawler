@@ -1,6 +1,9 @@
 package chromedp
 
-import "github.com/chromedp/chromedp"
+import (
+	"github.com/chromedp/chromedp"
+	"time"
+)
 
 // Login 登陆
 func (j *Job) Login(url, nodeUsername, nodePassword, nodeSubmit string) (err error) {
@@ -43,6 +46,7 @@ func (j *Job) Login(url, nodeUsername, nodePassword, nodeSubmit string) (err err
 		j.Ctx,
 		chromedp.Click(nodeSubmit),
 		chromedp.WaitReady(`body`, chromedp.ByQuery),
+		chromedp.Sleep(time.Hour),
 	)
 	if err != nil {
 		j.Error = err

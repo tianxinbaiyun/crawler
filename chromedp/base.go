@@ -8,6 +8,7 @@ import (
 	"github.com/chromedp/chromedp"
 	"log"
 	"net/http"
+	"time"
 )
 
 // 常量定义
@@ -37,15 +38,17 @@ type Account struct {
 
 // Step 步骤
 type Step struct {
-	TimeString string // 时间
-	URL        string // 地址
-	Selector   string // 选择器
-	Action     string // 动作
-	WantResp   bool   // 是否需要结果
+	URL      string        // 地址
+	Action   string        // 动作
+	Selector string        // 选择器
+	Value    string        // 内容
+	WantResp bool          // 是否需要结果
+	Sleep    time.Duration // 等待时间
+	Cron     string        // 定时操作
 }
 
 // NewJob 实例化任务
-func NewJob() *Job {
+func NewJob(debug bool) *Job {
 	ctx, cancel := chromedp.NewContext(context.Background())
 
 	job := &Job{
@@ -57,6 +60,12 @@ func NewJob() *Job {
 		Steps:  make([]*Step, 0),
 		Error:  nil,
 		Cancel: cancel,
+		Debug:  debug,
+	}
+	if job.Debug {
+		job.GetLocalContext()
+	} else {
+		job.GetProxyContext()
 	}
 	return job
 }
@@ -73,7 +82,8 @@ func (j *Job) SetSteps(steps []*Step) {
 }
 
 // Close 关闭
-func (j *Job) Close(debug bool) {
+func (j *Job) Close() {
+	defer j.Cancel()
 	v := chromedp.FromContext(j.Ctx)
 	if v.Target != nil {
 		target := fmt.Sprintf("%s/close/%s", RemoteURL, v.Target.TargetID)
@@ -82,7 +92,7 @@ func (j *Job) Close(debug bool) {
 			return
 		}
 	}
-	j.Cancel()
+	return
 }
 
 // GetLocalContext 用于本地测试的 context
@@ -92,7 +102,7 @@ func (j *Job) GetLocalContext() {
 
 	// 设置应用配置
 	options := []chromedp.ExecAllocatorOption{
-		chromedp.Flag("headless", true), // debug使用
+		chromedp.Flag("headless", !j.Debug), // debug使用
 		chromedp.UserAgent(useragent),
 	}
 	options = append(chromedp.DefaultExecAllocatorOptions[:], options...)
@@ -102,12 +112,12 @@ func (j *Job) GetLocalContext() {
 	ctx, cancel := chromedp.NewContext(c)
 	j.Ctx = ctx
 	j.Cancel = cancel
-
-	if err := chromedp.Run(
+	err := chromedp.Run(
 		j.Ctx,
 		emulation.SetDeviceMetricsOverride(1920, 1024, 1.0, false),
-	); err != nil {
-		j.Error = err
+	)
+	if err != nil {
+		panic(err)
 	}
 
 	return
@@ -133,13 +143,11 @@ func (j *Job) GetProxyContext() {
 
 	resp, err := http.Get(target)
 	if err != nil {
-		j.Error = err
-		return
+		panic(err)
 	}
 
 	if err = json.NewDecoder(resp.Body).Decode(&res); err != nil {
-		j.Error = err
-		return
+		panic(err)
 	}
 	ctx, _ := chromedp.NewRemoteAllocator(context.Background(), res.WebSocketDebuggerURL)
 	ctx, cancel := chromedp.NewContext(ctx)
@@ -151,7 +159,7 @@ func (j *Job) GetProxyContext() {
 		emulation.SetDeviceMetricsOverride(1920, 1024, 1.0, false),
 	)
 	if err != nil {
-		j.Error = err
+		panic(err)
 	}
 
 	return

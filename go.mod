@@ -6,7 +6,8 @@ require (
 	github.com/PuerkitoBio/goquery v1.6.1
 	github.com/antchfx/htmlquery v1.2.3 // indirect
 	github.com/antchfx/xmlquery v1.3.6 // indirect
-	github.com/chromedp/chromedp v0.7.2 // indirect
+	github.com/chromedp/cdproto v0.0.0-20210508221054-d7cfa85db7d1
+	github.com/chromedp/chromedp v0.7.2
 	github.com/gobwas/glob v0.2.3 // indirect
 	github.com/gocolly/colly v1.2.0
 	github.com/kennygrant/sanitize v1.2.4 // indirect
