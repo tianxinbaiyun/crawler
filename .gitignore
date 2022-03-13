@@ -4,7 +4,6 @@ debug
 
 *.img
 .idea
-/vendor
 *.exe
 *.log
 server
