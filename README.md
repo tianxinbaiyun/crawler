@@ -53,8 +53,15 @@ selenium 特性：
 
 ## chromedp
 
+chromedp 是一种更快、更简单的方式来驱动在 Go 中支持Chrome DevTools 协议的浏览器，而无需外部依赖。
+chromedp同样可以让浏览器自动执行各种Web应用。它目前主要用于Web端的自动化测试，但它并不仅仅局限于此。 
+它还可以用于自动化管理基于Web的各种无聊费时的任务。
 
+chromedp 特性：
 
+- 支持调用本地谷歌浏览器，方便debug开发。
+- 简单、灵活、因为是模拟操作WebDriver，它的性能比起colly会稍弱。
+- 支持截图功能。
 
 
 
