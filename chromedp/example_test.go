@@ -1,5 +1,0 @@
-package chromedp
-
-func Example() {
-
-}

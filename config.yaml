@@ -1,0 +1,12 @@
+version: 0.01
+
+header:
+  origin: origin
+  referer: https://search.jd.com/
+  user_agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36
+  cokie: "ipLoc-djd=1-72-2799-0"
+
+crawler:
+  search_url: http://www.baidu.com/
+  keyword: 123
+  selector: "#J_goodsList ul li img[src]"
