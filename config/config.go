@@ -27,15 +27,13 @@ type Header struct {
 
 // Crawler 抓包配置
 type Crawler struct {
-	SearchUrl             string `yaml:"search_url"`
-	SearchMaxPage         int    `yaml:"search_max_page"`
-	Keyword               string `yaml:"keyword"`
-	ListItemSelector      string `yaml:"list_item_selector"`
-	ListItemSelectorUrl   string `yaml:"list_item_selector_url"`
-	DetailImgSelector     string `yaml:"detail_img_selector"`
-	DetailImgSelectorAttr string `yaml:"detail_img_selector_attr"`
-	//Selector               string `yaml:"selector"`
-	//SelectorAttr           string `yaml:"selector_attr"`
+	SearchUrl           string `yaml:"search_url"`
+	SearchMaxPage       int    `yaml:"search_max_page"`
+	Keyword             string `yaml:"keyword"`
+	ListItemSelector    string `yaml:"list_item_selector"`
+	ListItemSelectorUrl string `yaml:"list_item_selector_url"`
+	ImgCommentMaxPage   int    `yaml:"img_comment_max_page"`
+	ImgCommentPageSize  int    `yaml:"img_comment_page_size"`
 }
 
 type DownLoad struct {

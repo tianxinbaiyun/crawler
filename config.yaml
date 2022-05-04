@@ -9,13 +9,12 @@ header:
 
 crawler:
   search_url: https://search.jd.com/Search?keyword={{keyword}}&pvid&page={{page}}
-  search_max_page: 1
+  search_max_page: 2 # 遍历的最大页数，例如10，表示取搜索的前10页
   keyword: 厕所
   list_item_selector: "#J_goodsList ul li .p-img a" #列表选择器
   list_item_selector_url: "href" #列表下详情的地址
-  detail_img_selector: "html" #图片选择器
-  detail_img_selector_attr: "data-lazy-img" #图片下载地址
-#  selector: "#J_goodsList ul li img[src]"
+  img_comment_max_page: 10 #最大页数，例如10，表示取前10页的图片
+  img_comment_page_size: 10 #评论每页条数，例如10，表示每次取10条数据
 
 download:
   path: "./img/"
