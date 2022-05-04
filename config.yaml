@@ -3,10 +3,19 @@ version: 0.01
 header:
   origin: origin
   referer: https://search.jd.com/
-  user_agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36
-  cokie: "ipLoc-djd=1-72-2799-0"
+  user_agent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36"
+  cokie: "__jdv=76161171|direct|-|none|-|1651628159902; __jdu=1651628159902882856289; areaId=19; ipLoc-djd=19-1607-0-0; PCSYCityID=CN_440000_440300_0; shshshfpa=c5cf4e2b-ec5a-9305-7b65-5d56637f9d7a-1651628162; shshshfpb=dkymtl45vL25neqoOlmP6RQ; __jdc=122270672; shshshfp=a8d5f7226be831ee42175b035de435b2; rkv=1.0; qrsc=3; __jda=122270672.1651628159902882856289.1651628160.1651630470.1651633005.3; __jdb=122270672.7.1651628159902882856289|3.1651633005; shshshsID=bad27af0c7249a01af48dcb0dead4807_7_1651635886768; 3AB9D23F7A4B3C9B=3MPX4KF54SRNU7YEJBOLBYV55R3LVP3KOFCQVEAJ5HZYYRDTJHAZLDZBZVRIOAUZVGTM3DYV7EWB7T7KL7M4NSBMA4"
+  host: "gia.jd.com"
 
 crawler:
-  search_url: http://www.baidu.com/
-  keyword: 123
-  selector: "#J_goodsList ul li img[src]"
+  search_url: https://search.jd.com/Search?keyword={{keyword}}&pvid&page={{page}}
+  search_max_page: 1
+  keyword: 厕所
+  list_item_selector: "#J_goodsList ul li .p-img a" #列表选择器
+  list_item_selector_url: "href" #列表下详情的地址
+  detail_img_selector: "html" #图片选择器
+  detail_img_selector_attr: "data-lazy-img" #图片下载地址
+#  selector: "#J_goodsList ul li img[src]"
+
+download:
+  path: "./img/"
