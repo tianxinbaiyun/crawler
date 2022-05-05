@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"os"
 	"strings"
 )
 
@@ -197,4 +198,17 @@ func GetImagePath(path, imgName string) (p string) {
 	}
 	p = path + imgName
 	return
+}
+
+// CreateDir 如果路径不存在，创建路径
+func CreateDir(path string) (ok bool) {
+	_, err := os.Stat(path)
+	if err == nil {
+		return true
+	}
+	err = os.MkdirAll(path, 0666)
+	if err != nil {
+		return false
+	}
+	return true
 }

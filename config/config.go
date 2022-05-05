@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"github.com/tianxinbaiyun/crawler/tool"
 	"io/ioutil"
 	"log"
 	"os"
@@ -64,5 +65,13 @@ func InitConfig() {
 	fmt.Println(C)
 
 	// 如果路径不存在，创建
+	if ok := tool.CreateDir(C.DownLoad.Path); !ok {
+		fmt.Println("创建路径错误")
+		return
+	}
+	if ok := tool.CreateDir(tool.GetImagePath(C.DownLoad.Path, C.DownLoad.ImagesName)); !ok {
+		fmt.Println("创建图片路径错误")
+		return
+	}
 
 }
