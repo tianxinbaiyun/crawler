@@ -3,7 +3,6 @@ package tool
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/tianxinbaiyun/crawler/config"
 	"io/ioutil"
 	"net/http"
 	"strings"
@@ -14,9 +13,9 @@ import (
 // @Author  clx  2022/5/4 9:36 上午
 // @Update  clx  2022/5/4 9:36 上午
 
-// GetSearchUrl 获取搜索地址
-func GetSearchUrl(keyword string, page int) (s string) {
-	s = config.C.Crawler.SearchUrl
+// GetSearchURL 获取搜索地址
+func GetSearchURL(searchURL, keyword string, page int) (s string) {
+	s = searchURL
 	if keyword != "" {
 		s = strings.ReplaceAll(s, "{{keyword}}", keyword)
 
@@ -91,6 +90,7 @@ func GetProductPageImageCommentList(productID string, page, pageSize int) (rsp *
 	return
 }
 
+// ImgListItem 京东图片结构体子项
 type ImgListItem struct {
 	ImageURL  string `json:"imageUrl"`
 	ImageID   int    `json:"imageId"`
@@ -150,11 +150,51 @@ type ImgListItem struct {
 	}
 }
 
-// GetProductPageImageCommentListRsp 图片返回
+// GetProductPageImageCommentListRsp 图片接口返回结构体
 type GetProductPageImageCommentListRsp struct {
 	ImgComments struct {
 		ImgCommentCount int            `json:"imgCommentCount"`
 		ImgList         []*ImgListItem `json:"imgList"`
 	} `json:"imgComments"`
 	ReferenceID int64 `json:"referenceId"`
+}
+
+// SaveImgList 保存图片列表
+func SaveImgList(list []*ImgListItem, imgPath string) {
+	for _, item := range list {
+		if strings.HasPrefix(item.ImageURL, `//`) {
+			item.ImageURL = strings.ReplaceAll(item.ImageURL, `//`, "https://")
+		}
+		fmt.Println(item.ImageURL)
+		resp, err := http.Get(item.ImageURL)
+		defer resp.Body.Close()
+		if err != nil {
+			fmt.Println(err)
+			break
+		}
+
+		body, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			fmt.Println(err)
+		}
+		urlArr := strings.Split(item.ImageURL, `/`)
+		fileName := urlArr[len(urlArr)-1]
+		err = ioutil.WriteFile(imgPath+fileName, body, 0755)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+	}
+}
+
+// GetImagePath 获取图片文件夹
+func GetImagePath(path, imgName string) (p string) {
+	if !strings.HasSuffix(path, `/`) {
+		path = path + "/"
+	}
+	if strings.HasPrefix(imgName, `/`) {
+		imgName = strings.TrimLeft(imgName, "/")
+	}
+	p = path + imgName
+	return
 }

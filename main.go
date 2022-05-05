@@ -10,21 +10,20 @@ import (
 	"github.com/gocolly/colly"
 	"github.com/tianxinbaiyun/crawler/config"
 	"github.com/tianxinbaiyun/crawler/tool"
-	"io/ioutil"
 	"log"
-	"net/http"
 	"net/url"
 	"strings"
 	"sync"
 )
 
-func GetDetail(detailUrl string, group *sync.WaitGroup) {
+// GetDetail 获取详情
+func GetDetail(detailURL string, group *sync.WaitGroup) {
 	defer func() {
 		group.Done()
 	}()
 	pageSie := config.C.Crawler.ImgCommentPageSize
 	maxPage := config.C.Crawler.SearchMaxPage
-	urlParams, _ := url.Parse(detailUrl)
+	urlParams, _ := url.Parse(detailURL)
 	productID := strings.TrimRight(strings.TrimLeft(urlParams.Path, "/"), ".html")
 
 	//fmt.Println(productID)
@@ -33,11 +32,11 @@ func GetDetail(detailUrl string, group *sync.WaitGroup) {
 		fmt.Println(err)
 		return
 	}
-
+	imgPath := tool.GetImagePath(config.C.DownLoad.Path, config.C.DownLoad.ImagesName)
 	if rsp.ImgComments.ImgCommentCount <= 0 || len(rsp.ImgComments.ImgList) <= 0 {
 		return
 	}
-	SaveImgList(rsp.ImgComments.ImgList)
+	tool.SaveImgList(rsp.ImgComments.ImgList, imgPath)
 
 	// 更多页处理
 	if rsp.ImgComments.ImgCommentCount > pageSie {
@@ -50,38 +49,12 @@ func GetDetail(detailUrl string, group *sync.WaitGroup) {
 			if len(rsp.ImgComments.ImgList) <= 0 {
 				return
 			}
-			SaveImgList(rsp.ImgComments.ImgList)
+
+			tool.SaveImgList(rsp.ImgComments.ImgList, imgPath)
 		}
 	}
 	return
 	//fmt.Println(rsp)
-}
-
-func SaveImgList(list []*tool.ImgListItem) {
-	for _, item := range list {
-		if strings.HasPrefix(item.ImageURL, `//`) {
-			item.ImageURL = strings.ReplaceAll(item.ImageURL, `//`, "https://")
-		}
-		fmt.Println(item.ImageURL)
-		resp, err := http.Get(item.ImageURL)
-		defer resp.Body.Close()
-		if err != nil {
-			fmt.Println(err)
-			break
-		}
-
-		body, err := ioutil.ReadAll(resp.Body)
-		if err != nil {
-			fmt.Println(err)
-		}
-		urlArr := strings.Split(item.ImageURL, `/`)
-		fileName := urlArr[len(urlArr)-1]
-		err = ioutil.WriteFile(config.C.DownLoad.Path+fileName, body, 0755)
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
-	}
 }
 
 // GetPageList 列表页
@@ -98,7 +71,7 @@ func GetPageList(i int, group *sync.WaitGroup) {
 	})
 	c.OnHTML(config.C.Crawler.ListItemSelector, func(e *colly.HTMLElement) {
 
-		url := e.Attr(config.C.Crawler.ListItemSelectorUrl)
+		url := e.Attr(config.C.Crawler.ListItemSelectorURL)
 		if strings.HasPrefix(url, `//`) {
 			url = strings.ReplaceAll(url, `//`, "https://")
 		}
@@ -110,12 +83,9 @@ func GetPageList(i int, group *sync.WaitGroup) {
 
 		})
 		c.OnResponse(func(r *colly.Response) {
-
 			wg.Add(1)
 			go GetDetail(url, &wg)
 
-			//err := ioutil.WriteFile(config.C.DownLoad.Path+s, body, 0755)
-			//fmt.Println(url, err)
 		})
 		c.Visit(url)
 
@@ -127,7 +97,7 @@ func GetPageList(i int, group *sync.WaitGroup) {
 		wg.Wait()
 		group.Done()
 	})
-	url := tool.GetSearchUrl(config.C.Crawler.Keyword, i)
+	url := tool.GetSearchURL(config.C.Crawler.SearchURL, config.C.Crawler.SearchKeyword, i)
 	c.Visit(url)
 
 }

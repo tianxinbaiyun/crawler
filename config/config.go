@@ -27,17 +27,20 @@ type Header struct {
 
 // Crawler 抓包配置
 type Crawler struct {
-	SearchUrl           string `yaml:"search_url"`
+	SearchURL           string `yaml:"search_url"`
 	SearchMaxPage       int    `yaml:"search_max_page"`
-	Keyword             string `yaml:"keyword"`
+	SearchKeyword       string `yaml:"search_keyword"`
 	ListItemSelector    string `yaml:"list_item_selector"`
-	ListItemSelectorUrl string `yaml:"list_item_selector_url"`
+	ListItemSelectorURL string `yaml:"list_item_selector_url"`
 	ImgCommentMaxPage   int    `yaml:"img_comment_max_page"`
 	ImgCommentPageSize  int    `yaml:"img_comment_page_size"`
 }
 
+// DownLoad 下载配置结构体
 type DownLoad struct {
-	Path string `path`
+	Path             string `path`
+	ImagesName       string `images_name`
+	CommentExcelName string `comment_excel_name`
 }
 
 // C 全局配置信息
@@ -59,4 +62,7 @@ func InitConfig() {
 		panic(err)
 	}
 	fmt.Println(C)
+
+	// 如果路径不存在，创建
+
 }
