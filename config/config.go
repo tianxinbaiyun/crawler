@@ -35,6 +35,7 @@ type Crawler struct {
 	ListItemSelectorURL string `yaml:"list_item_selector_url"`
 	ImgCommentMaxPage   int    `yaml:"img_comment_max_page"`
 	ImgCommentPageSize  int    `yaml:"img_comment_page_size"`
+	ImgCommentKeyword   string `yaml:"img_comment_keyword"`
 }
 
 // DownLoad 下载配置结构体

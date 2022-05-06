@@ -82,10 +82,27 @@ func Save2Excel(list []*ExportData, f *excelize.File, workSheet string) error {
 			item.CommentText,
 			item.IsHasKeyword,
 			item.CommentImg,
+			item.CommentRemoteImg,
 		})
 		if err != nil {
 			fmt.Println("SetSheetRow failed. err:" + err.Error())
 			return err
+		}
+		//设置超链接
+		if item.CommentImg != "" {
+			err = f.SetCellHyperLink(workSheet, fmt.Sprintf("M%d", lint), item.CommentImg, "External")
+			if err != nil {
+				fmt.Println("set table row height failed. err:" + err.Error())
+				return err
+			}
+		}
+		//设置超链接
+		if item.CommentRemoteImg != "" {
+			err = f.SetCellHyperLink(workSheet, fmt.Sprintf("M%d", lint), item.CommentRemoteImg, "External")
+			if err != nil {
+				fmt.Println("set table row height failed. err:" + err.Error())
+				return err
+			}
 		}
 		err = f.SetRowHeight(workSheet, lint, rowHeight)
 		if err != nil {

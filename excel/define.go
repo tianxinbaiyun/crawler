@@ -52,7 +52,8 @@ func initExcelConfig() *Excel {
 		{Title: "评论关键词", Field: "comment_keyword", RequiredCol: true},
 		{Title: "评论文字", Field: "comment_text", RequiredCol: true},
 		{Title: "是否包含评论关键词", Field: "is_has_keyword", RequiredCol: true},
-		{Title: "评论图片", Field: "comment_img", RequiredCol: true},
+		{Title: "本地图片地址", Field: "comment_img", RequiredCol: true},
+		{Title: "源图片地址", Field: "comment_remote_img", RequiredCol: true},
 	}
 
 	//转map
@@ -185,12 +186,13 @@ func SetExcelStyle(ctx context.Context, f *excelize.File, workSheet string, maxR
 
 // ExportData 导出结构体
 type ExportData struct {
-	ProductID      string `json:"product_id"`      // 产品id
-	ProductName    string `json:"product_name"`    // 产品名称
-	SearchKeyword  string `json:"search_keyword"`  // 搜索关键词
-	CommentTime    string `json:"comment_time"`    // 评论时间
-	CommentKeyword string `json:"comment_keyword"` // 评论关键词
-	CommentText    string `json:"comment_text"`    // 评论文字
-	IsHasKeyword   bool   `json:"is_has_keyword"`  // 是否包含评论关键词
-	CommentImg     string `json:"comment_img"`     // 评论图片
+	ProductID        string `json:"product_id"`         // 产品id
+	ProductName      string `json:"product_name"`       // 产品名称
+	SearchKeyword    string `json:"search_keyword"`     // 搜索关键词
+	CommentTime      string `json:"comment_time"`       // 评论时间
+	CommentKeyword   string `json:"comment_keyword"`    // 评论关键词
+	CommentText      string `json:"comment_text"`       // 评论文字
+	IsHasKeyword     bool   `json:"is_has_keyword"`     // 是否包含评论关键词
+	CommentImg       string `json:"comment_img"`        // 本地图片地址
+	CommentRemoteImg string `json:"comment_remote_img"` // 原图片地址
 }

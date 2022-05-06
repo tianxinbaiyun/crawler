@@ -73,3 +73,9 @@ type GetProductPageImageCommentListRsp struct {
 	} `json:"imgComments"`
 	ReferenceID int64 `json:"referenceId"`
 }
+
+// ProductDetail 详情
+type ProductDetail struct {
+	ProductID string `json:"product_id"`
+	Title     string `json:"title"`
+}
