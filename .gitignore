@@ -3,6 +3,7 @@ test
 debug
 
 *.img
+*/img
 .idea
 *.exe
 *.log

@@ -42,7 +42,19 @@ func GetSpecialColStyle() *excelize.Style {
 	style.Fill = excelize.Fill{
 		Type:    "pattern",
 		Pattern: 1,
-		Color:   []string{"#d71345"},
+		Color:   []string{"#238E68"},
+	}
+	return style
+}
+
+// GetURLColStyle 超链接样式
+func GetURLColStyle() *excelize.Style {
+	style := GetBaseStyle()
+	style.Font = &excelize.Font{
+		Bold:      false,
+		Italic:    false,
+		Underline: "single",
+		Color:     "#1265BE",
 	}
 	return style
 }

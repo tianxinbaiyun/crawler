@@ -92,12 +92,13 @@ func GetPageList(i int, group *sync.WaitGroup) {
 
 		// 请求详情
 		wg.Add(1)
-
-		list := GetDetail(&tool.ProductDetail{
-			ProductID: productID,
-			Title:     title,
-		}, &wg)
-		exportList = append(exportList, list...)
+		go func() {
+			list := GetDetail(&tool.ProductDetail{
+				ProductID: productID,
+				Title:     title,
+			}, &wg)
+			exportList = append(exportList, list...)
+		}()
 
 	})
 

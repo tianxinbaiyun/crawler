@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/xuri/excelize/v2"
+	"os"
 	"strings"
 )
 
@@ -11,6 +12,10 @@ import (
 const (
 	firstRowHeight = 20
 	rowHeight      = 20
+)
+
+var (
+	BasePath, _ = os.Getwd()
 )
 
 // ConvertInterface ConvertInterface
@@ -70,6 +75,19 @@ func Save2Excel(list []*ExportData, f *excelize.File, workSheet string) error {
 	//写入数据
 	lint := 0
 
+	// 设置特殊颜色
+	specialStyle := GetSpecialColStyle()
+	specialStyleID, err := f.NewStyle(specialStyle)
+	if err != nil {
+		return err
+	}
+
+	urlStyle := GetURLColStyle()
+	urlStyleID, err := f.NewStyle(urlStyle)
+	if err != nil {
+		return err
+	}
+
 	//行数据写入
 	for index, item := range list {
 		lint = index + 2
@@ -89,18 +107,44 @@ func Save2Excel(list []*ExportData, f *excelize.File, workSheet string) error {
 			return err
 		}
 		//设置超链接
-		if item.CommentImg != "" {
-			err = f.SetCellHyperLink(workSheet, fmt.Sprintf("M%d", lint), item.CommentImg, "External")
+		if item.ProductID != "" {
+			url := fmt.Sprintf("https://item.jd.com/%s.html", item.ProductID)
+			err = f.SetCellHyperLink(workSheet, fmt.Sprintf("A%d", lint), url, "External")
 			if err != nil {
 				fmt.Println("set table row height failed. err:" + err.Error())
+				return err
+			}
+			err = f.SetCellStyle(workSheet, fmt.Sprintf("A%d", lint), fmt.Sprintf("A%d", lint), urlStyleID)
+			if err != nil {
+				return err
+			}
+		}
+		//设置超链接
+		if item.CommentImg != "" {
+			imgPath := item.CommentImg
+			if strings.HasPrefix(imgPath, ".") {
+				imgPath = fmt.Sprintf("%s%s", BasePath, strings.Trim(imgPath, "."))
+			}
+			imgPath = strings.ReplaceAll(imgPath, `/`, `\`)
+			err = f.SetCellHyperLink(workSheet, fmt.Sprintf("H%d", lint), imgPath, "External")
+			if err != nil {
+				fmt.Println("set table row height failed. err:" + err.Error())
+				return err
+			}
+			err = f.SetCellStyle(workSheet, fmt.Sprintf("H%d", lint), fmt.Sprintf("H%d", lint), urlStyleID)
+			if err != nil {
 				return err
 			}
 		}
 		//设置超链接
 		if item.CommentRemoteImg != "" {
-			err = f.SetCellHyperLink(workSheet, fmt.Sprintf("M%d", lint), item.CommentRemoteImg, "External")
+			err = f.SetCellHyperLink(workSheet, fmt.Sprintf("I%d", lint), item.CommentRemoteImg, "External")
 			if err != nil {
 				fmt.Println("set table row height failed. err:" + err.Error())
+				return err
+			}
+			err = f.SetCellStyle(workSheet, fmt.Sprintf("I%d", lint), fmt.Sprintf("I%d", lint), urlStyleID)
+			if err != nil {
 				return err
 			}
 		}
@@ -108,6 +152,14 @@ func Save2Excel(list []*ExportData, f *excelize.File, workSheet string) error {
 		if err != nil {
 			fmt.Println("set table row height failed. err:" + err.Error())
 			return err
+		}
+
+		//颜色标记
+		if item.IsHasKeyword {
+			err = f.SetCellStyle(workSheet, fmt.Sprintf("A%d", lint), fmt.Sprintf("I%d", lint), specialStyleID)
+			if err != nil {
+				return err
+			}
 		}
 
 	}
