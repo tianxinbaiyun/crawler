@@ -9,15 +9,15 @@ header:
 
 crawler:
   search_url: https://search.jd.com/Search?keyword={{keyword}}&pvid&page={{page}}
-  search_max_page: 3 # 遍历的最大页数，例如10，表示取搜索的前10页
-  search_keyword: 地漏
+  search_max_page: 1 # 遍历的最大页数，例如10，表示取搜索的前10页
+  search_keyword: 裙子
   list_item_selector: "#J_goodsList ul li .p-name a" #列表选择器
   list_item_selector_url: "href" #列表下详情的地址
-  img_comment_max_page: 3 #最大页数，例如10，表示取前10页的图片
-  img_comment_page_size: 3 #评论每页条数，例如10，表示每次取10条数据
-  img_comment_keyword: 清洁 #评论关键词标记
+  img_comment_max_page: 1 #最大页数，例如10，表示取前10页的图片s
+  img_comment_page_size: 1 #评论每页条数，例如10，表示每次取10条数据
+  img_comment_keyword: 洛丽塔 #评论关键词标记
 
 download:
-  path: "./floor_drain/"
+  path: "./comment/"
   images_name: "img" #图片文件夹名称
   comment_excel_name: "comment.xlsx" #评论对应文件名称

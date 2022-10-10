@@ -117,7 +117,7 @@ func CreateDir(path string) (ok bool) {
 	if err == nil {
 		return true
 	}
-	err = os.MkdirAll(path, 0666)
+	err = os.MkdirAll(path, 0777)
 	if err != nil {
 		return false
 	}
